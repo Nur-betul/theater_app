@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ticket_app/main.dart';
+import 'package:theater/main.dart';
 
 class MockSupabaseClient extends SupabaseClient {
   // Implement a mock SupabaseClient here

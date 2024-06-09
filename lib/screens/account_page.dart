@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ticket_app/components/avatar.dart';
-import 'package:ticket_app/main.dart';
+import 'package:theater/components/avatar.dart';
+import 'package:theater/main.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -13,7 +13,7 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   final _usernameController = TextEditingController();
   final _websiteController = TextEditingController();
-
+  String? _imageUrl;
   String? _avatarUrl;
   var _loading = true;
 

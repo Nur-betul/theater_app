@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:ticket_app/screens/theaters.dart';
+import 'package:theater/screens/theaters.dart';
+import 'package:theater/home/app_color.dart' as AppColors;
 
 User? globaluser;
 
@@ -16,7 +17,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
+  String? _imageUrl;
   Future<void> signUp() async {
     try {
       final AuthResponse response = await widget.client.auth.signUp(
@@ -25,7 +26,7 @@ class _LoginPageState extends State<LoginPage> {
       );
       if (response.user != null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Signed up successfully!")),
+          const SnackBar(content: Text("Kayıt başarılı!")),
         );
 
         // Navigate to the Dashboard page after successful sign-up
@@ -41,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
         //await createPersonalDatabase(_emailController.text);
       } else {
         ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text("Signed up failed")));
+            .showSnackBar(const SnackBar(content: Text("Kayıt başarısız!")));
       }
     } catch (e) {
       if (e is AuthException) {
@@ -50,20 +51,22 @@ class _LoginPageState extends State<LoginPage> {
           // Handle rate limit exceeded error
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-                content: Text("Too many sign-up attempts. Try again later.")),
+                content:
+                    Text("Fazla giriş denemesi. Daha sonra tekrar deneyiniz.")),
           );
         } else if (e.statusCode == 400) {
           // Handle invalid credentials error
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
                 content: Text(
-                    "Invalid credentials. Please check your email and password.")),
+                    "Geçersiz kimlik bilgileri. Lütfen e-postanızı ve şifrenizi kontrol edin.")),
           );
         } else {
           // Handle other errors if needed
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-                content: Text("Sign Up/In failed. Please try again later.")),
+                content: Text(
+                    "Kayıt/Giriş hatalı. Lütfen daha sonra tekrar deneyin.")),
           );
         }
       } else {
@@ -71,7 +74,8 @@ class _LoginPageState extends State<LoginPage> {
         print("Error: $e");
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text("An error occurred. Please try again later.")),
+              content:
+                  Text("Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.")),
         );
       }
     }
@@ -79,20 +83,21 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> signIn(BuildContext context) async {
     try {
-      final response = await widget.client.auth.signInWithPassword(
+      final response_real = await widget.client.auth.signInWithPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
-      if (response.user != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Signed in successfully!")));
-        globaluser = response.user;
+      if (response_real.user != null) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text("Giriş başarılı!")));
+
+        globaluser = response_real.user;
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => TheaterList()),
         );
       } else {
         ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text("Signed in failed")));
+            .showSnackBar(const SnackBar(content: Text("Giriş başarısız")));
       }
     } catch (e) {
       if (e is AuthException) {
@@ -101,20 +106,22 @@ class _LoginPageState extends State<LoginPage> {
           // Handle rate limit exceeded error
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-                content: Text("Too many sign-up attempts. Try again later.")),
+                content:
+                    Text("Fazla giriş denemesi. Daha sonra tekrar deneyiniz.")),
           );
         } else if (e.statusCode == 400) {
           // Handle invalid credentials error
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
                 content: Text(
-                    "Invalid credentials. Please check your email and password.")),
+                    "Geçersiz kimlik bilgileri. Lütfen e-postanızı ve şifrenizi kontrol edin.")),
           );
         } else {
           // Handle other errors if needed
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-                content: Text("Sign Up/In failed. Please try again later.")),
+                content: Text(
+                    "Kayıt/Giriş hatalı. Lütfen daha sonra tekrar deneyin.")),
           );
         }
       } else {
@@ -122,7 +129,8 @@ class _LoginPageState extends State<LoginPage> {
         print("Error: $e");
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-              content: Text("An error occurred. Please try again later.")),
+              content:
+                  Text("Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.")),
         );
       }
     }
@@ -131,7 +139,14 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Login Ekranı")),
+      appBar: AppBar(
+        title: const Text(
+          "Giriş Ekranı",
+          style: TextStyle(color: Color(0xFFFFF3D9)),
+        ),
+        backgroundColor: AppColors.bluntOrange,
+      ),
+      backgroundColor: AppColors.menuColor,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -144,13 +159,26 @@ class _LoginPageState extends State<LoginPage> {
             TextField(
               controller: _passwordController,
               obscureText: true,
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'Şifre'),
             ),
             const SizedBox(height: 10),
             ElevatedButton(
-                onPressed: () => signIn(context), child: const Text('Login')),
+                onPressed: () => signIn(context),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.bluntOrange),
+                child: const Text(
+                  'Giriş yap',
+                  style: TextStyle(color: Colors.white),
+                )),
             const SizedBox(height: 10),
-            ElevatedButton(onPressed: signUp, child: const Text('Sign Up')),
+            ElevatedButton(
+                onPressed: signUp,
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.bluntOrange),
+                child: const Text(
+                  'Kayıt ol',
+                  style: TextStyle(color: Colors.white),
+                )),
           ],
         ),
       ),
