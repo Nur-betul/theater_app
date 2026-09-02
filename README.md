@@ -1,6 +1,6 @@
 # ticket_app
 
-A new Flutter project.
+A Flutter project.
 
 # theater
 # theater_app
